@@ -1,0 +1,82 @@
+J/A+A/XXX/XXXX Stellar models with rotation. 10<M<150, Z=0.001 (Choplin+, 2018)
+================================================================================
+Non standard s-process in massive rotating stars. 
+Yields of 10 − 150 M_sun models at Z = 1e-3.
+    Choplin A., Hirschi R., Meynet G., Ekstrom S., Chiappini C., Laird A.
+   <Astron. Astrophys. XXX, XXXX (2018)>
+   =2018A&A...XXXX.XXXX
+================================================================================
+ADC_Keywords: Models, evolutionary
+Keywords: stars: massive − stars: rotation − stars: interiors − 
+          stars: abundances − stars: chemically peculiar − nuclear reactions, 
+          nucleosynthesis, abundances
+
+Abstract:
+    Context. Recent studies show that rotation significantly affects the 
+    s-process in massive stars. 
+    Aims. We provide tables of yields for non-rotating and rotating massive 
+    stars between 10 and 150 $M_{\odot}$ at $Z=10^{-3}$ ([Fe/H] $=-1.8$). 
+    Tables for different mass cuts are provided. The complete s-process is 
+    followed during the whole evolution with a network of 737 isotopes, 
+    from Hydrogen to Polonium. 
+    Methods. A grid of stellar models with initial masses of 10, 15, 20, 25, 
+    40, 60, 85, 120 and 150 $M_{\odot}$ and with an initial rotation rate of 
+    both 0 or 40\% of the critical velocity was computed. Three extra models 
+    were computed in order to investigate the effect of faster rotation (70\% 
+    of the critical velocity) and of a lower $^{17}$O($\alpha,\gamma$) 
+    reaction rate.
+    Results. At the considered metallicity, rotation has a strong impact on 
+    the production of s-elements for initial masses between 20 and 
+    60 $M_{\odot}$. In this range, the first s-process peak is boosted by 
+    $2-3$ dex if rotation is included. Above 60 $M_{\odot}$, s-element 
+    yields of rotating and non-rotating models are similar. Increasing the 
+    initial rotation from 40 \% to 70 \% of the critical velocity enhances 
+    the production of $40 \lesssim Z \lesssim 60$ elements by $\sim 0.5-1$ 
+    dex. Adopting a reasonably lower $^{17}$O($\alpha,\gamma$) rate in the 
+    fast rotating model (70 \% of the critical velocity) boosts again the 
+    yields of s-elements with $55 \lesssim Z  \lesssim 82$ by about 1 dex. 
+    In particular, a modest amount of Pb is produced. Together with 
+    s-elements, some light elements (particularly fluorine) are strongly 
+    overproduced in rotating models.
+
+
+Description:
+    The presented table include the stellar yields of the models of the paper.
+    The initial masses of the model are 10, 15, 20, 25, 40, 60, 85, 120 and
+    150 M_sun. The initial rotation rate v_ini / v_crit is either 0, 0.4
+    or 0.7. Two models (25 M_sun with v_ini / v_crit = 0.7 and 120 M_sun
+    without rotation) were computed with a 17O(a,g)21Ne reaction rate divided
+    by ten. For each model, 100 mass cut values are considered (c.f. Sect. 4.2
+    of the paper for details). Both the ejected mass and the yield (Eq. 3 of 
+    the paper) of the 277 stable (or almost stable) isotopes considered 
+    are given. Ejected mass and yields below 1e-15 in absolute value were 
+    set to zero.
+    
+File Summary:
+--------------------------------------------------------------------------------
+ FileName   Lrecl  Records   Explanations
+--------------------------------------------------------------------------------
+ReadMe         80        .   This file
+yields.txt     55   581700   Table of yields
+--------------------------------------------------------------------------------
+
+Byte-by-byte Description of file: yields.txt
+--------------------------------------------------------------------------------
+   Bytes Format Units   Label   Explanations
+--------------------------------------------------------------------------------
+   1-  3 I3     solMass Mass    Initial mass
+   6-  9 F3.1   ---     Rot     Initial rotation rate (v_ini / v_crit, see text)
+  12- 13 I1     ---     Rate    Rate for the 17O(a,g)21Ne reaction (1)
+  16- 22 F6.2   solMass Mcut    Mass cut
+  24- 29 A5     ---     Isotope Isotope name
+  32- 42 E10.3  solMass Ej Mass Ejected mass of the considered isotope
+  45- 55 E10.3  solMass Yield   Stellar yield (Eq. 3 of the paper)
+--------------------------------------------------------------------------------
+Note (1): 0 is for standard rate, 1 means that the rate was divided by 10.
+--------------------------------------------------------------------------------
+
+Acknowledgements:
+    Arthur Choplin, arthur.choplin(at)unige.ch
+
+================================================================================
+(End)      Arthur Choplin [Geneva Obs.]
