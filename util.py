@@ -37,7 +37,7 @@ class isotope():
                 raise ValueError('Symbol cannot be identified. Note that element beyond U is not allowed!')
         elif isinstance(identifier, int):
             Z = identifier
-            if Z > 92:
+            if Z <= 92:
                 symbol = Z2Symbol_dict[Z]
                 self.symbol = symbol
                 A = None
