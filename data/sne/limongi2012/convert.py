@@ -23,7 +23,7 @@ symbol_list = [
     'pa', 'u'
 ]
 
-db = 'znuc2012.S4.star.el.y.stardb.gz'
+db = 'znuc_lc12.el.y.stardb.xz'
 dbpath = find_data(DB, db)
 db = StarDB(dbpath, silent=True)
 sun = SolAbu('solas09.dat', silent=True)
