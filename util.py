@@ -1,8 +1,12 @@
+import socket
 import re, scipy
 import numpy as np
 from pathlib import Path
+log10 = lambda X: np.log10(X, 
+    out=np.full(X.shape, np.nan), 
+    where=X>0)
 
-symbol_list = [
+symbol_arr = np.array([
     'h',  'he', 'li', 'be', 'b',  'c',  'n',   'o',  'f', 'ne', 
     'na', 'mg', 'al', 'si', 'p',  's',  'cl', 'ar',  'k', 'ca',
     'sc', 'ti', 'v',  'cr', 'mn', 'fe', 'co', 'ni', 'cu', 'zn',
@@ -13,10 +17,18 @@ symbol_list = [
     'lu', 'hf', 'ta', 'w',  're', 'os', 'ir', 'pt', 'au', 'hg', 
     'tl', 'pb', 'bi', 'po', 'at', 'rn', 'fr', 'ra', 'ac', 'th', 
     'pa', 'u'
-]
-symbol_list = [_.capitalize() for _ in symbol_list]
-Symbol2Z_dict = {_:_idx+1 for _idx, _ in enumerate(symbol_list)}
-Z2Symbol_dict = {_idx+1:_ for _idx, _ in enumerate(symbol_list)}
+])
+symbol_arr = np.char.capitalize(symbol_arr)
+symbol_list = symbol_arr.tolist()
+def Symbol2Z(Symbol):
+    if isinstance(Symbol, str):
+        Z = symbol_list.index(Symbol)+1
+    elif hasattr(Symbol, '__iter__'):
+        Z = np.array([symbol_list.index(_) for _ in Symbol])+1
+    return Z
+def Z2Symbol(Z):
+    Symbol = symbol_arr[Z-1]
+    return Symbol
 
 class isotope():
     def __init__(self, identifier, type=None) -> None:
@@ -25,8 +37,8 @@ class isotope():
             re_result = re.match(string_pattern, identifier)
             symbol, A = re_result.groups()
             symbol = symbol.lower().capitalize()
-            if symbol in symbol_list:
-                Z = Symbol2Z_dict[symbol]
+            if symbol in symbol_arr:
+                Z = Symbol2Z(symbol)
                 if A == '':
                     A = None
                 else:
@@ -38,7 +50,7 @@ class isotope():
         elif isinstance(identifier, int):
             Z = identifier
             if Z <= 92:
-                symbol = Z2Symbol_dict[Z]
+                symbol = Z2Symbol(Z)
                 self.symbol = symbol
                 A = None
             else:
@@ -65,8 +77,8 @@ class isotope():
         pass
 
 def read_refdata(filename):
-    mfrac_arr = np.zeros(len(symbol_list), dtype=np.float64)
-    nfrac_arr = np.zeros(len(symbol_list), dtype=np.float64)
+    mfrac_arr = np.zeros(len(symbol_arr), dtype=np.float64)
+    nfrac_arr = np.zeros(len(symbol_arr), dtype=np.float64)
     filepath = Path(filename)
     if not filepath.exists():
         raise FileNotFoundError('%s not found. '%filepath)
@@ -80,7 +92,7 @@ def read_refdata(filename):
         if len(linesplt) == 3:
             iso, massfrac, numfrac = line.split()
             iso = isotope(iso)
-        else:
+        elif len(linesplt) == 2:
             iso, massfrac = line.split()
             iso = isotope(iso)
             if iso.A is None:
@@ -97,3 +109,39 @@ def read_refdata(filename):
     # mfrac_arr /= np.sum(mfrac_arr)
     # nfrac_arr /= np.sum(nfrac_arr)
     return mfrac_arr, nfrac_arr
+
+def load_yield(snref_path):
+    nfrac_list = []
+    P_list = []
+    str_split = np.loadtxt(snref_path/'p_detail', max_rows=1, dtype=int)
+    p_mod = np.loadtxt(snref_path/'p_detail', skiprows=1, dtype=int)
+    for path in snref_path.iterdir():
+        if path.suffix == '.dat':
+            mfrac, nfrac = read_refdata(path)
+            nfrac_list.append(nfrac)
+            # break
+            P_vec = np.array([
+                path.stem[str_split[idx]:str_split[idx+1]] 
+                for idx in range(len(str_split)-1)], 
+                dtype=np.float64)
+            P_vec /= p_mod
+            P_list.append(P_vec)
+    M_nfrac = np.array(nfrac_list)
+    M_logeps = log10(M_nfrac)
+    M_logeps = M_logeps - M_logeps[:, [0]] + 12 # - M[:, [25]]
+    P = np.array(P_list)
+    return P, M_logeps
+
+def load_solref(solref_path='../data/ref/sol_asplund09.dat'):
+    solref_path = Path(solref_path)
+    sol_mfrac, sol_nfrac = read_refdata(solref_path)
+    sol_logeps = log10(sol_nfrac)
+    sol_logeps += (-sol_logeps[0]+12)
+    return sol_logeps
+
+
+hostname = socket.gethostname()
+if hostname == 'jerome-linux':
+    hostdir = Path('/home/jerome/Documents/GitHub')
+elif hostname == 'sage2020':
+    hostdir = Path('/home/jiangrz/hdd23')
